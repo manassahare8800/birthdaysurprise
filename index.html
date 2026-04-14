@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Princess Puja ❤️</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:
+    radial-gradient(circle at top, #ffe4ec, #ffb6c1, #ff69b4, #c2185b);
+  overflow-x:hidden;
+  text-align:center;
+  color:white;
+}
+
+/* AURA */
+.aura{
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.25), transparent 40%),
+    radial-gradient(circle at 85% 70%, rgba(255,182,193,0.25), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15), transparent 60%);
+  animation: glowMove 6s ease-in-out infinite alternate;
+  z-index:-1;
+  filter: blur(2px);
+}
+
+@keyframes glowMove{
+  from{transform:scale(1);}
+  to{transform:scale(1.08);}
+}
+
+/* SECTIONS */
+.section{
+  display:none;
+  min-height:100vh;
+  width:100%;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  padding:20px;
+  box-sizing:border-box;
+}
+
+#lock{display:flex;}
+
+input{
+  padding:12px;
+  border-radius:15px;
+  border:none;
+  width:80%;
+  max-width:300px;
+  font-size:16px;
+}
+
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:20px;
+  background:#ff2e63;
+  color:white;
+  margin:6px;
+  font-size:16px;
+}
+
+img{
+  width:80%;
+  max-width:220px;
+  border-radius:12px;
+}
+
+#text{
+  color:#222;
+  font-weight:bold;
+  font-size:15px;
+  max-width:95%;
+  line-height:1.5;
+  background:rgba(255,255,255,0.8);
+  padding:12px;
+  border-radius:10px;
+}
+
+/* HEARTS */
+.softHeart{
+  position:fixed;
+  bottom:-20px;
+  font-size:18px;
+  animation: floatUp 7s linear forwards;
+  opacity:0.8;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+  z-index:0;
+}
+
+@keyframes floatUp{
+  0%{transform:translateY(0) scale(0.8);opacity:0;}
+  10%{opacity:1;}
+  100%{transform:translateY(-120vh) scale(1.4);opacity:0;}
+}
+
+/* LETTER */
+#letterText{
+  color:#000;
+  background:rgba(255,255,255,0.95);
+  padding:20px;
+  border-radius:15px;
+  max-width:92%;
+  font-size:18px;
+  line-height:1.8;
+  font-weight:800;
+  text-align:center;
+  box-shadow:0 0 20px rgba(255,255,255,0.4);
+}
+
+/* CANVAS */
+canvas{
+  position:absolute;
+  width:100%;
+  height:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="aura"></div>
+
+<audio id="bgm" loop>
+<source src="music.mp3">
+</audio>
+
+<!-- LOCK -->
+<div id="lock" class="section">
+<h2>Enter Password 👑</h2>
+<input type="password" id="pass">
+<button onclick="checkPass()">Open</button>
+</div>
+
+<!-- FACE -->
+<div id="face" class="section">
+<h2>Face Unlock 💖</h2>
+<video id="video" autoplay muted></video>
+<p>LOOKING AT YOU...</p>
+</div>
+
+<!-- GALLERY -->
+<div id="gallery" class="section"></div>
+
+<!-- READER -->
+<div id="reader" class="section">
+<img id="img">
+<p id="text"></p>
+<button onclick="back()">⬅ Back</button>
+</div>
+
+<!-- LETTER -->
+<div id="letter" class="section">
+<h2>💌 A Special Letter For You 💌</h2>
+<p id="letterText"></p>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="section">
+<h1 id="msg"></h1>
+<canvas id="fire"></canvas>
+</div>
+
+<script>
+
+let video=document.getElementById("video");
+let streamGlobal;
+let bgm=document.getElementById("bgm");
+bgm.volume=0.6;
+
+/* NAMES */
+let herName="PUJA";
+let yourName="MANAS";
+
+/* HEARTS */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="softHeart";
+  h.innerHTML=Math.random()>0.5?"💖":"🤍";
+
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(14+Math.random()*22)+"px";
+  h.style.animationDuration=(5+Math.random()*5)+"s";
+
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),9000);
+},200);
+
+/* SHOW */
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="flex";
+}
+
+/* LOCK */
+function checkPass(){
+  if(pass.value==="PUJA20"){
+    show("face");
+    startCamera();
+  } else alert("Wrong Password");
+}
+
+/* CAMERA */
+async function startCamera(){
+  streamGlobal = await navigator.mediaDevices.getUserMedia({video:true});
+  video.srcObject = streamGlobal;
+
+  setTimeout(()=>{
+    stopCamera();
+    showGallery();
+  },5000);
+}
+
+function stopCamera(){
+  if(streamGlobal){
+    streamGlobal.getTracks().forEach(t=>t.stop());
+  }
+}
+
+/* IMAGES */
+let imgs=[
+"phataka1.jpeg","phataka2.jpeg","phataka3.jpeg","phaataka4.jpeg",
+"phataka5.jpeg","phataka6.jpeg","phataka7.jpeg","phataka8.jpeg"
+];
+
+/* LETTERS */
+let letters=[
+"My love… you are my soft happiness.",
+"You are a beautiful feeling in human form.",
+"I fall in love with your smile again and again.",
+"You make ordinary moments feel special.",
+"You are peace in a noisy world.",
+"You are truly rare.",
+"You are everything.",
+"Happy Birthday LOVE.... "
+];
+
+/* GALLERY */
+function showGallery(){
+  show("gallery");
+  bgm.play().catch(()=>{});
+
+  let g=document.getElementById("gallery");
+  g.innerHTML="";
+
+  imgs.forEach((img,i)=>{
+    g.innerHTML+=`
+      <div>
+        <p>Photo ${i+1}</p>
+        <button onclick="openPhoto(${i})">Open</button>
+      </div>
+    `;
+  });
+}
+
+/* OPEN PHOTO */
+function openPhoto(i){
+  show("reader");
+
+  document.getElementById("img").src=imgs[i];
+  document.getElementById("text").innerText=letters[i];
+
+  bgm.volume=0.25;
+
+  speechSynthesis.cancel();
+
+  let msg=new SpeechSynthesisUtterance(letters[i]);
+  msg.rate=1;
+
+  msg.onend=()=>{
+    bgm.volume=0.6;
+    if(i===7) showLetter();
+  };
+
+  speechSynthesis.speak(msg);
+}
+
+/* BACK */
+function back(){
+  showGallery();
+}
+
+/* LETTER */
+let fullLetter=`
+HAPPY BIRTHDAY ❤️
+
+Today is not just a normal day…
+It is a celebration of someone truly rare and special.
+
+You are not just beautiful —
+you are the kind of beauty that brings calmness, peace, and light.
+
+Your presence makes life feel softer and more meaningful.
+
+I hope you always receive kindness,
+love, and everything your heart deserves.
+
+You are unforgettable in the most gentle and beautiful way.
+
+And today I just want you to know:
+
+You are appreciated.
+You are valued.
+You are truly special.
+
+This is a small gift from my side for you my love — ${MANAS} 💖
+`;
+
+function typeLetter(t,i=0){
+  document.getElementById("letterText").innerHTML=t.slice(0,i);
+  if(i<t.length) setTimeout(()=>typeLetter(t,i+1),20);
+}
+
+function showLetter(){
+  show("letter");
+
+  typeLetter(fullLetter);
+
+  let clean = fullLetter.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "");
+
+  let speech=new SpeechSynthesisUtterance(clean);
+  speech.rate=1;
+
+  speech.onend=()=>setTimeout(finalScreen,1500);
+
+  speechSynthesis.speak(speech);
+}
+
+/* FINAL */
+function finalScreen(){
+  show("final");
+
+  let msg="HAPPY BIRTHDAY ❤️";
+  let el=document.getElementById("msg");
+
+  let i=0;
+  let t=setInterval(()=>{
+    el.innerHTML=msg.slice(0,i++);
+    if(i>msg.length){
+      clearInterval(t);
+      fire();
+    }
+  },70);
+}
+
+/* FIREWORKS */
+function fire(){
+  let c=document.getElementById("fire");
+  let ctx=c.getContext("2d");
+
+  c.width=innerWidth;
+  c.height=innerHeight;
+
+  let particles=[];
+
+  function burst(){
+    for(let i=0;i<40;i++){
+      particles.push({
+        x:Math.random()*c.width,
+        y:Math.random()*c.height/2,
+        dx:(Math.random()-0.5)*6,
+        dy:(Math.random()-0.5)*6,
+        life:100
+      });
+    }
+  }
+
+  function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,c.width,c.height);
+
+    particles.forEach((p,i)=>{
+      p.x+=p.dx;
+      p.y+=p.dy;
+      p.life--;
+
+      ctx.fillStyle="white";
+      ctx.fillRect(p.x,p.y,2,2);
+
+      if(p.life<=0) particles.splice(i,1);
+    });
+
+    /* HER NAME */
+    ctx.font="bold 60px Arial";
+    ctx.fillStyle="#fff";
+    ctx.textAlign="center";
+    ctx.shadowColor="#ff4da6";
+    ctx.shadowBlur=25;
+    ctx.fillText(herName, c.width/2, c.height/3);
+
+    /* 💖 FINAL TEXT UPDATED */
+    let text="I LOVE YOU ❤️";
+    let reveal=Math.min(text.length, Math.floor(particles.length/10));
+    ctx.font="bold 70px Arial";
+    ctx.fillText(text.slice(0,reveal), c.width/2, c.height/2);
+
+    requestAnimationFrame(draw);
+  }
+
+  setInterval(burst,600);
+  draw();
+}
+
+show("lock");
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("PWA Ready ✅"))
+    .catch(err => console.log(err));
+}
+</script>
+
+</body>
+</html>
