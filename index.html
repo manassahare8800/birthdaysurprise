@@ -96,8 +96,6 @@ img{
   font-size:18px;
   animation: floatUp 7s linear forwards;
   opacity:0.8;
-  filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
-  z-index:0;
 }
 
 @keyframes floatUp{
@@ -116,11 +114,13 @@ img{
   font-size:18px;
   line-height:1.8;
   font-weight:800;
-  text-align:center;
-  box-shadow:0 0 20px rgba(255,255,255,0.4);
 }
 
-/* CANVAS */
+/* FINAL SCREEN */
+#final{
+  background:black;
+}
+
 canvas{
   position:absolute;
   width:100%;
@@ -180,7 +180,6 @@ let streamGlobal;
 let bgm=document.getElementById("bgm");
 bgm.volume=0.6;
 
-/* NAMES */
 let herName="PUJA";
 let yourName="MANAS";
 
@@ -189,11 +188,7 @@ setInterval(()=>{
   let h=document.createElement("div");
   h.className="softHeart";
   h.innerHTML=Math.random()>0.5?"💖":"🤍";
-
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=(14+Math.random()*22)+"px";
-  h.style.animationDuration=(5+Math.random()*5)+"s";
-
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),9000);
 },200);
@@ -231,7 +226,7 @@ function stopCamera(){
 
 /* IMAGES */
 let imgs=[
-"phataka1.jpeg","phataka2.jpeg","phataka3.jpeg","phaataka4.jpeg",
+"phataka1.jpeg","phataka2.jpeg","phataka3.jpeg","phataka4.jpeg",
 "phataka5.jpeg","phataka6.jpeg","phataka7.jpeg","phataka8.jpeg"
 ];
 
@@ -244,7 +239,7 @@ let letters=[
 "You are peace in a noisy world.",
 "You are truly rare.",
 "You are everything.",
-"Happy Birthday LOVE.... "
+"Happy Birthday LOVE ❤️"
 ];
 
 /* GALLERY */
@@ -297,25 +292,11 @@ let fullLetter=`
 HAPPY BIRTHDAY ❤️
 
 Today is not just a normal day…
-It is a celebration of someone truly rare and special.
+It is a celebration of someone truly special.
 
-You are not just beautiful —
-you are the kind of beauty that brings calmness, peace, and light.
+You are beautiful, kind, and unforgettable.
 
-Your presence makes life feel softer and more meaningful.
-
-I hope you always receive kindness,
-love, and everything your heart deserves.
-
-You are unforgettable in the most gentle and beautiful way.
-
-And today I just want you to know:
-
-You are appreciated.
-You are valued.
-You are truly special.
-
-This is a small gift from my side for you my love — ${MANAS} 💖
+This is a small gift from my side for you my love — ${yourName} 💖
 `;
 
 function typeLetter(t,i=0){
@@ -328,7 +309,7 @@ function showLetter(){
 
   typeLetter(fullLetter);
 
-  let clean = fullLetter.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "");
+  let clean = fullLetter.replace(/[^\w\s.,!?]/g,"");
 
   let speech=new SpeechSynthesisUtterance(clean);
   speech.rate=1;
@@ -392,19 +373,10 @@ function fire(){
       if(p.life<=0) particles.splice(i,1);
     });
 
-    /* HER NAME */
     ctx.font="bold 60px Arial";
     ctx.fillStyle="#fff";
     ctx.textAlign="center";
-    ctx.shadowColor="#ff4da6";
-    ctx.shadowBlur=25;
     ctx.fillText(herName, c.width/2, c.height/3);
-
-    /* 💖 FINAL TEXT UPDATED */
-    let text="I LOVE YOU ❤️";
-    let reveal=Math.min(text.length, Math.floor(particles.length/10));
-    ctx.font="bold 70px Arial";
-    ctx.fillText(text.slice(0,reveal), c.width/2, c.height/2);
 
     requestAnimationFrame(draw);
   }
@@ -416,11 +388,10 @@ function fire(){
 show("lock");
 
 </script>
+
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("PWA Ready ✅"))
-    .catch(err => console.log(err));
+  navigator.serviceWorker.register("sw.js");
 }
 </script>
 
