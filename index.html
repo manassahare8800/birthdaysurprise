@@ -162,6 +162,14 @@ canvas{
 <canvas id="fire"></canvas>
 </div>
 
+<!-- ✅ ADDED ENDING -->
+<div id="ending" class="section">
+  <h1 style="font-size:30px; line-height:1.6;">
+    I LOVE YOU ❤️ <br>
+    FOREVER AND ALWAYS 💖
+  </h1>
+</div>
+
 <script>
 
 let video=document.getElementById("video");
@@ -172,12 +180,10 @@ bgm.volume=0.6;
 let herName="PUJA";
 let yourName="MANAS";
 
-/* REMOVE EMOJIS FUNCTION */
 function cleanText(text){
   return text.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "");
 }
 
-/* HEARTS */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="softHeart";
@@ -302,6 +308,7 @@ function showLetter(){
   speechSynthesis.speak(speech);
 }
 
+/* ✅ UPDATED */
 function finalScreen(){
   show("final");
 
@@ -314,10 +321,12 @@ function finalScreen(){
     if(i>msg.length){
       clearInterval(t);
       fire();
+      setTimeout(showEnding, 5000);
     }
   },70);
 }
 
+/* FIREWORKS */
 function fire(){
   let c=document.getElementById("fire");
   let ctx=c.getContext("2d");
@@ -364,6 +373,16 @@ function fire(){
 
   setInterval(burst,600);
   draw();
+}
+
+/* ✅ NEW */
+function showEnding(){
+  show("ending");
+
+  let speech=new SpeechSynthesisUtterance("I love you forever and always");
+  speech.rate=1;
+
+  speechSynthesis.speak(speech);
 }
 
 show("lock");
